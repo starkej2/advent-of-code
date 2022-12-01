@@ -1,11 +1,11 @@
-private const val DAY_NAME = "Day01"
+private const val DAY_NAME = "Day00"
 fun main() {
     fun part1(input: List<String>): Int {
-        return input.size
+        return 0
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        return 0
     }
 
     // test if implementation meets criteria from the description, like:

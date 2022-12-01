@@ -1,16 +1,26 @@
 private const val DAY_NAME = "Day01"
 fun main() {
     val testInput = readInput("${DAY_NAME}_test")
-    check(part1(testInput) == 24000)
+    check(calculatePart1Result(testInput) == 24000)
 
     val input = readInput(DAY_NAME)
-    println(part1(input))
+    println("part 1 result = ${calculatePart1Result(input)}")
+    println("part 2 result = ${calculatePart2Result(input)}")
 }
 
-private fun part1(input: List<String>): Int {
+private fun calculatePart1Result(input: List<String>): Int {
     val elfHauls = parseInput(input)
     return elfHauls.maxOf { it.totalCalories }
 }
+
+private fun calculatePart2Result(input: List<String>): Int {
+    val elfHauls = parseInput(input)
+    return elfHauls
+        .sortedByDescending { it.totalCalories }
+        .take(3)
+        .sumOf { it.totalCalories }
+}
+
 
 private fun parseInput(input: List<String>): List<ElfHaul> {
     val elfHauls = mutableListOf<ElfHaul>()

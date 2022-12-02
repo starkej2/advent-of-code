@@ -9,42 +9,55 @@ fun main() {
 }
 
 private fun calculatePart1Result(input: List<String>): Int {
-    val elfHauls = parseInput(input)
-    return elfHauls.maxOf { it.totalCalories }
+    val elfInventories = parseInput(input)
+    return elfInventories.maxOf { it.totalCalories }
 }
 
 private fun calculatePart2Result(input: List<String>): Int {
-    val elfHauls = parseInput(input)
-    return elfHauls
+    val elfInventories = parseInput(input)
+    return elfInventories
         .sortedByDescending { it.totalCalories }
         .take(3)
         .sumOf { it.totalCalories }
 }
 
-
-private fun parseInput(input: List<String>): List<ElfHaul> {
-    val elfHauls = mutableListOf<ElfHaul>()
-
-    val iterator = input.iterator()
-    while (iterator.hasNext()) {
-        val foodItems = mutableListOf<FoodItem>()
-        do {
-            val nextInput = iterator.next().toIntOrNull()
-            if (nextInput != null) {
-                foodItems.add(FoodItem(nextInput))
-            }
-        } while (iterator.hasNext() && nextInput != null)
-
-        elfHauls.add(ElfHaul(foodItems))
-    }
-
-    return elfHauls
+private fun parseInput(input: List<String>): List<ElfInventory> {
+    val test = input
+        .divide { it.isBlank() }
+        .map { valuesGroup ->
+            ElfInventory(
+                items = valuesGroup
+                    .mapNotNull { it.toIntOrNull() }
+                    .map(::FoodItem)
+            )
+        }
+    return test
 }
 
-data class ElfHaul(
-    val foodItems: List<FoodItem>,
+private inline fun <T> List<T>.divide(isDivider: (T) -> Boolean): List<List<T>> {
+    val originalList = this
+    val iterator = originalList.listIterator()
+    var windowStartIndex = 0
+    val result = mutableListOf<List<T>>()
+
+    while (iterator.hasNext()) {
+        val itemIndex = iterator.nextIndex()
+        val item = iterator.next()
+
+        if (isDivider(item)) {
+            result.add(originalList.subList(windowStartIndex, itemIndex))
+            windowStartIndex = itemIndex + 1
+        }
+    }
+
+    result.add(originalList.subList(windowStartIndex, originalList.size))
+    return result
+}
+
+data class ElfInventory(
+    val items: List<FoodItem>,
 ) {
-    val totalCalories: Int = foodItems.sumOf { it.calories }
+    val totalCalories: Int = items.sumOf { it.calories }
 }
 
 @JvmInline

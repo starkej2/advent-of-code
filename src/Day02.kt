@@ -42,37 +42,45 @@ fun main() {
 private enum class Shape(
     val pointsValue: Int,
 ) {
-    ROCK(pointsValue = 1) {
-        override fun getResultAgainst(otherShape: Shape): GameRound.Result {
-            return when (otherShape) {
-                ROCK -> GameRound.Result.DRAW
-                PAPER -> GameRound.Result.LOSE
-                SCISSORS -> GameRound.Result.WIN
-            }
-        }
+    ROCK(
+        pointsValue = 1
+    ) {
+        override val winsAgainst: Shape
+            get() = SCISSORS
+        override val losesAgainst: Shape
+            get() = PAPER
     },
 
-    PAPER(pointsValue = 2) {
-        override fun getResultAgainst(otherShape: Shape): GameRound.Result {
-            return when (otherShape) {
-                ROCK -> GameRound.Result.WIN
-                PAPER -> GameRound.Result.DRAW
-                SCISSORS -> GameRound.Result.LOSE
-            }
-        }
+    PAPER(
+        pointsValue = 2
+    ) {
+        override val winsAgainst: Shape
+            get() = ROCK
+
+        override val losesAgainst: Shape
+            get() = SCISSORS
     },
 
-    SCISSORS(pointsValue = 3) {
-        override fun getResultAgainst(otherShape: Shape): GameRound.Result {
-            return when (otherShape) {
-                ROCK -> GameRound.Result.LOSE
-                PAPER -> GameRound.Result.WIN
-                SCISSORS -> GameRound.Result.DRAW
-            }
-        }
+    SCISSORS(
+        pointsValue = 3
+    ) {
+        override val winsAgainst: Shape
+            get() = PAPER
+
+        override val losesAgainst: Shape
+            get() = ROCK
     };
 
-    abstract fun getResultAgainst(otherShape: Shape): GameRound.Result
+    abstract val winsAgainst: Shape
+    abstract val losesAgainst: Shape
+
+    fun getResultAgainst(otherShape: Shape): GameRound.Result {
+        return when {
+            this.winsAgainst == otherShape -> GameRound.Result.WIN
+            this.losesAgainst == otherShape -> GameRound.Result.LOSE
+            else -> GameRound.Result.DRAW
+        }
+    }
 
     companion object {
         fun fromKey(key: String): Shape {
